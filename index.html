@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Decision Flowchart</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 60%; margin: auto; padding: 20px; }
+        .question { font-weight: bold; margin-top: 20px; }
+        .options { margin-top: 10px; }
+        .options button { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>What Should You Work on Next?</h1>
+        <div id="flowchart">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+        </div>
+        <div id="result" style="display: none; margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        // Flowchart rules and decision structure
+        const flowchart = {
+            start: {
+                question: "Do you have rework of your own?",
+                options: [
+                    { answer: "Yes", nextStep: "ownRework" },
+                    { answer: "No", nextStep: "assignedPartnerReview" }
+                ]
+            },
+            assignedPartnerReview: {
+                question: "Do you have code review for your assigned partner?",
+                options: [
+                    { answer: "Yes", nextStep: "partnerReview" },
+                    { answer: "No", nextStep: "hitListTask" }
+                ]
+            },
+            hitListTask: {
+                question: "Do you have a 2024 Hit List task in development?",
+                options: [
+                    { answer: "Yes", nextStep: "hitList" },
+                    { answer: "No", nextStep: "stateOfHitList" }
+                ]
+            },
+            stateOfHitList: {
+                question: "Is your 2024 Hit Last task still on the board? (Before 'Ready to Release')",
+                options: [
+                    { answer: "Yes", nextStep: "otherCodeReview" },
+                    { answer: "No", nextStep: "newHitList" }
+                ]
+            },
+            otherCodeReview: {
+                question: "Is there other code review you can do?",
+                options: [
+                    { answer: "Yes", nextStep: "otherReview" },
+                    { answer: "No", nextStep: "maintenance" }
+                ]
+            },
+            maintenance: {
+                question: "Are there any maintenance tasks you can work on?",
+                options: [
+                    { answer: "Yes", nextStep: "maintenanceTask" },
+                    { answer: "No", nextStep: "keepingLightsOn" }
+                ]
+            },
+            keepingLightsOn: {
+                question: "Are there any keeping the lights on tasks you can work on?",
+                options: [
+                    { answer: "Yes", nextStep: "lightsOn" },
+                    { answer: "No", nextStep: "askInChannel" }
+                ]
+            }
+        };
+
+        const results = {
+            ownRework: "Your next task is your own rework.",
+            partnerReview: "Your next task is code review for your assigned partner.",
+            hitList: "Work on your 2024 Hit List task.",
+            nextHitList: "Start a new 2024 Hit List task.",
+            otherReview: "Do other code review.",
+            maintenanceTask: "Address any maintenance tasks.",
+            lightsOn: "Focus on 'Keeping the Lights On' tasks.",
+            askInChannel: "Ask in the channel for further guidance."
+        };
+
+        let currentStep = "start";
+
+        function showQuestion() {
+            const step = flowchart[currentStep];
+            document.getElementById("question").innerText = step.question;
+            document.getElementById("options").innerHTML = '';
+
+            step.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option.answer;
+                button.onclick = () => handleAnswer(option.nextStep);
+                document.getElementById("options").appendChild(button);
+            });
+        }
+
+        function handleAnswer(nextStep) {
+            if (results[nextStep]) {
+                document.getElementById("flowchart").style.display = "none";
+                document.getElementById("result").style.display = "block";
+                document.getElementById("result").innerText = results[nextStep];
+            } else {
+                currentStep = nextStep;
+                showQuestion();
+            }
+        }
+
+        // Initialize flowchart
+        showQuestion();
+    </script>
+</body>
+</html>
